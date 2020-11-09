@@ -1,7 +1,10 @@
 let index;
+let video;
 
 function setup(){
     createCanvas(640, 480);
+    video = createCapture(VIDEO);
+    video.hide();
     pixelDensity(1); //simplify math
     
     // Find the pixel at 20, 40.
@@ -14,6 +17,10 @@ function setup(){
     let green = pixels[index + 1];
     let blue = pixels[index + 2];
     let alpha = pixels[index + 3];
+}
+
+function draw(){
+    image(video, 0, 0);
 }
 
 function filter(){
