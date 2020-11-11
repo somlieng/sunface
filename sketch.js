@@ -24,13 +24,14 @@ function setup(){
 }
 
 function modelLoaded() {
-  select('#status').html('I can now your eyes!');
+  select('#status').html('I can now see your eyes!');
 }
 
 //very frame, clear old picture and update with new temperature
 function draw(){
     clear();
     image(video, 0, 0);
+    
     if (pose) {
      leftEye = pose.leftEye;
      ellipse(leftEye,pose.rightEye,20);
@@ -45,8 +46,9 @@ function draw(){
     }
     
     if(keyIsDown(71)){
-        gaussianBlur(); 
+        gaussianBlur();
     }
+    
 }
 
 //make video cooler or warmer based on x position
@@ -96,66 +98,134 @@ function brighten(num){
 //this function was based off Crystal Chen and Paolla Bruno Druto example code on https://idmnyu.github.io/p5.js-image/Blur/index.html
 function gaussianBlur(){
   
-  let matrix = [[1, 2, 1],
-		        [2, 4, 2],
-		        [1, 2, 1]]; 
+  let matrix = [[1, 4, 6, 4, 1],
+		        [4, 16, 24, 16, 4],
+                [6, 24, 36, 24, 6],
+                [4, 16, 24, 16, 4],
+                [1, 4, 6, 4, 1]
+               ]; 
   //this matrix value is changed from the original box blur values to the gaussian values
   
   loadPixels();
   let w = width;
   let h = height;
   
-  //instead of blurring the whole image, you only blur on mouse drag
+  //instead of box blur, this is now a 5x5 gaussian blur
   for (var x = 0; x < width; x++) {
     for (var y = 0; y < height; y++) {
     
-		var ul = ((x-1+w)%w + w*((y-1+h)%h))*4; // Upper left
-		var uc = ((x-0+w)%w + w*((y-1+h)%h))*4; // Upper Center
-		var ur = ((x+1+w)%w + w*((y-1+h)%h))*4; // Upper right
-		var ml = ((x-1+w)%w + w*((y+0+h)%h))*4; // left
-		var mc = ((x-0+w)%w + w*((y+0+h)%h))*4; // center
-		var mr = ((x+1+w)%w + w*((y+0+h)%h))*4; // right
-		var ll = ((x-1+w)%w + w*((y+1+h)%h))*4; // Lower left
-		var lc = ((x-0+w)%w + w*((y+1+h)%h))*4; // lower center
-		var lr = ((x+1+w)%w + w*((y+1+h)%h))*4; // lower right
+		var a1 = ((x-2+w)%w + w*((y-2+h)%h))*4; // a1
+        var a2 = ((x-1+w)%w + w*((y-2+h)%h))*4; // a2
+        var a3 = ((x-0+w)%w + w*((y-2+h)%h))*4; // a3
+        var a4 = ((x+1+w)%w + w*((y-2+h)%h))*4; // a4
+        var a5 = ((x+2+w)%w + w*((y-2+h)%h))*4; // a5
+        var b1 = ((x-2+w)%w + w*((y-1+h)%h))*4; // b1
+        var b2 = ((x-1+w)%w + w*((y-1+h)%h))*4; // b2
+        var b3 = ((x-0+w)%w + w*((y-1+h)%h))*4; // b3
+        var b4 = ((x+1+w)%w + w*((y-1+h)%h))*4; // b4
+        var b5 = ((x+2+w)%w + w*((y-1+h)%h))*4; // b5
+        var c1 = ((x-2+w)%w + w*((y-0+h)%h))*4; // c1
+        var c2 = ((x-1+w)%w + w*((y-0+h)%h))*4; // c2
+        var c3 = ((x-0+w)%w + w*((y-0+h)%h))*4; // c3 CENTER
+        var c4 = ((x+1+w)%w + w*((y-0+h)%h))*4; // c4
+        var c5 = ((x+2+w)%w + w*((y-0+h)%h))*4; // c5
+        var d1 = ((x-2+w)%w + w*((y+1+h)%h))*4; // d1
+        var d2 = ((x-1+w)%w + w*((y+1+h)%h))*4; // d2
+        var d3 = ((x-0+w)%w + w*((y+1+h)%h))*4; // d3
+        var d4 = ((x+1+w)%w + w*((y+1+h)%h))*4; // d4
+        var d5 = ((x+2+w)%w + w*((y+1+h)%h))*4; // d5
+        var e1 = ((x-2+w)%w + w*((y+2+h)%h))*4; // e1
+        var e2 = ((x-1+w)%w + w*((y+2+h)%h))*4; // e2
+        var e3 = ((x-0+w)%w + w*((y+2+h)%h))*4; // e3
+        var e4 = ((x+1+w)%w + w*((y+2+h)%h))*4; // e4
+        var e5 = ((x+2+w)%w + w*((y+2+h)%h))*4; // e5
+		
 					
-				p0 = pixels[ul]*matrix[0][0]; // upper left
-				p1 = pixels[uc]*matrix[0][1]; // upper mid
-				p2 = pixels[ur]*matrix[0][2]; // upper right
-				p3 = pixels[ml]*matrix[1][0]; // left
-				p4 = pixels[mc]*matrix[1][1]; // center pixel
-				p5 = pixels[mr]*matrix[1][2]; // right
-				p6 = pixels[ll]*matrix[2][0]; // lower left
-				p7 = pixels[lc]*matrix[2][1]; // lower mid
-				p8 = pixels[lr]*matrix[2][2]; // lower right
-				var red = (p0+p1+p2+p3+p4+p5+p6+p7+p8)/16;
+        r1 = pixels[a1]*matrix[0][0]; // a1
+        r2 = pixels[a2]*matrix[0][1]; // a2
+        r3 = pixels[a3]*matrix[0][2]; // a3
+        r4 = pixels[a4]*matrix[0][3]; // a4
+        r5 = pixels[a5]*matrix[0][4]; // a5
+        r6 = pixels[b1]*matrix[1][0]; // b1
+        r7 = pixels[b2]*matrix[1][1]; // b2
+        r8 = pixels[b3]*matrix[1][2]; // b3
+        r9 = pixels[b4]*matrix[1][3]; // b4
+        r10 = pixels[b5]*matrix[1][4]; // b5
+        r11 = pixels[c1]*matrix[2][0]; // c1
+        r12 = pixels[c2]*matrix[2][1]; // c2
+        r13 = pixels[c3]*matrix[2][2]; // c3
+        r14 = pixels[c4]*matrix[2][3]; // c4
+        r15 = pixels[c5]*matrix[2][4]; // c5
+        r16 = pixels[d1]*matrix[3][0]; // d1
+        r17 = pixels[d2]*matrix[3][1]; // d2
+        r18 = pixels[d3]*matrix[3][2]; // d3
+        r19 = pixels[d4]*matrix[3][3]; // d4
+        r20 = pixels[d5]*matrix[3][4]; // d5
+        r21 = pixels[e1]*matrix[4][0]; // e1
+        r22 = pixels[e2]*matrix[4][1]; // e2
+        r23 = pixels[e3]*matrix[4][2]; // e3
+        r24 = pixels[e4]*matrix[4][3]; // e4
+        r25 = pixels[e5]*matrix[4][4]; // e5
+        var red = (r1+r2+r3+r4+r5+r6+r7+r8+r9+r10+r11+r12+r13+r14+r15+r16+r17+r18+r19+r20+r21+r22+r23+r24+r25)/256;
+        
+        g1 = pixels[a1+1]*matrix[0][0]; // a1
+        g2 = pixels[a2+1]*matrix[0][1]; // a2
+        g3 = pixels[a3+1]*matrix[0][2]; // a3
+        g4 = pixels[a4+1]*matrix[0][3]; // a4
+        g5 = pixels[a5+1]*matrix[0][4]; // a5
+        g6 = pixels[b1+1]*matrix[1][0]; // b1
+        g7 = pixels[b2+1]*matrix[1][1]; // b2
+        g8 = pixels[b3+1]*matrix[1][2]; // b3
+        g9 = pixels[b4+1]*matrix[1][3]; // b4
+        g10 = pixels[b5+1]*matrix[1][4]; // b5
+        g11 = pixels[c1+1]*matrix[2][0]; // c1
+        g12 = pixels[c2+1]*matrix[2][1]; // c2
+        g13 = pixels[c3+1]*matrix[2][2]; // c3
+        g14 = pixels[c4+1]*matrix[2][3]; // c4
+        g15 = pixels[c5+1]*matrix[2][4]; // c5
+        g16 = pixels[d1+1]*matrix[3][0]; // d1
+        g17 = pixels[d2+1]*matrix[3][1]; // d2
+        g18 = pixels[d3+1]*matrix[3][2]; // d3
+        g19 = pixels[d4+1]*matrix[3][3]; // d4
+        g20 = pixels[d5+1]*matrix[3][4]; // d5
+        g21 = pixels[e1+1]*matrix[4][0]; // e1
+        g22 = pixels[e2+1]*matrix[4][1]; // e2
+        g23 = pixels[e3+1]*matrix[4][2]; // e3
+        g24 = pixels[e4+1]*matrix[4][3]; // e4
+        g25 = pixels[e5+1]*matrix[4][4]; // e5		
+        var green = (g1+g2+g3+g4+g5+g6+g7+g8+g9+g10+g11+g12+g13+g14+g15+g16+g17+g18+g19+g20+g21+g22+g23+g24+g25)/256;
+			
+        b1 = pixels[a1+2]*matrix[0][0]; // a1
+        b2 = pixels[a2+2]*matrix[0][1]; // a2
+        b3 = pixels[a3+2]*matrix[0][2]; // a3
+        b4 = pixels[a4+2]*matrix[0][3]; // a4
+        b5 = pixels[a5+2]*matrix[0][4]; // a5
+        b6 = pixels[b1+2]*matrix[1][0]; // b1
+        b7 = pixels[b2+2]*matrix[1][1]; // b2
+        b8 = pixels[b3+2]*matrix[1][2]; // b3
+        b9 = pixels[b4+2]*matrix[1][3]; // b4
+        b10 = pixels[b5+2]*matrix[1][4]; // b5
+        b11 = pixels[c1+2]*matrix[2][0]; // c1
+        b12 = pixels[c2+2]*matrix[2][1]; // c2
+        b13 = pixels[c3+2]*matrix[2][2]; // c3
+        b14 = pixels[c4+2]*matrix[2][3]; // c4
+        b15 = pixels[c5+2]*matrix[2][4]; // c5
+        b16 = pixels[d1+2]*matrix[3][0]; // d1
+        b17 = pixels[d2+2]*matrix[3][1]; // d2
+        b18 = pixels[d3+2]*matrix[3][2]; // d3
+        b19 = pixels[d4+2]*matrix[3][3]; // d4
+        b20 = pixels[d5+2]*matrix[3][4]; // d5
+        b21 = pixels[e1+2]*matrix[4][0]; // e1
+        b22 = pixels[e2+2]*matrix[4][1]; // e2
+        b23 = pixels[e3+2]*matrix[4][2]; // e3
+        b24 = pixels[e4+2]*matrix[4][3]; // e4
+        b25 = pixels[e5+2]*matrix[4][4]; // e5
+        var blue = (b1+b2+b3+b4+b5+b6+b7+b8+b9+b10+b11+b12+b13+b14+b15+b16+b17+b18+b19+b20+b21+b22+b23+b24+b25)/256;
 					
-				p0 = pixels[ul+1]*matrix[0][0]; // upper left
-				p1 = pixels[uc+1]*matrix[0][1]; // upper mid
-				p2 = pixels[ur+1]*matrix[0][2]; // upper right
-				p3 = pixels[ml+1]*matrix[1][0]; // left
-				p4 = pixels[mc+1]*matrix[1][1]; // center pixel
-				p5 = pixels[mr+1]*matrix[1][2]; // right
-				p6 = pixels[ll+1]*matrix[2][0]; // lower left
-				p7 = pixels[lc+1]*matrix[2][1]; // lower mid
-				p8 = pixels[lr+1]*matrix[2][2]; // lower right
-				var green = (p0+p1+p2+p3+p4+p5+p6+p7+p8)/16;
-					
-				p0 = pixels[ul+2]*matrix[0][0]; // upper left
-				p1 = pixels[uc+2]*matrix[0][1]; // upper mid
-				p2 = pixels[ur+2]*matrix[0][2]; // upper right
-				p3 = pixels[ml+2]*matrix[1][0]; // left
-				p4 = pixels[mc+2]*matrix[1][1]; // center pixel
-				p5 = pixels[mr+2]*matrix[1][2]; // right
-				p6 = pixels[ll+2]*matrix[2][0]; // lower left
-				p7 = pixels[lc+2]*matrix[2][1]; // lower mid
-				p8 = pixels[lr+2]*matrix[2][2]; // lower right
-				var blue = (p0+p1+p2+p3+p4+p5+p6+p7+p8)/16;
-					
-				pixels[mc] = red;
-				pixels[mc+1] = green;
-				pixels[mc+2] = blue;
-				pixels[mc+3] = pixels[lc+3];
+        pixels[c3] = red;
+        pixels[c3+1] = green;
+        pixels[c3+2] = blue;
+        pixels[c3+3] = pixels[e3+3];
 			
 	  	}	
   }
