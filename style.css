@@ -1,7 +1,31 @@
-html, body {
+html {
   margin: 0;
-  padding: 0;
+  padding: 50px;
+  background: #F8F4F1;
 }
+
 canvas {
   display: block;
+}
+
+h1, h3{
+  font-family: 'Playfair Display', serif;
+  color: #291D15;
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 60px;
+}
+
+h3{
+  font-weight:400;
+  font-size: 20px;
+}
+
+p{
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  color: #291D15;
+  font-size: 16px;
 }

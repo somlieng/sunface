@@ -26,7 +26,7 @@ function setup(){
 }
 
 function modelLoaded() {
-  select('#status').html('I can now see your eyes!');
+  select('#status').html('I can see thy eyes anon');
 }
 
 //very frame, clear old picture and update with new temperature
@@ -36,7 +36,6 @@ function draw(){
     
     if (pose) {
      leftEye = pose.leftEye;
-     ellipse(leftEye,pose.rightEye,20);
     
      x = map(leftEye.x,0,width,-25,25);
      temp = x
@@ -48,11 +47,11 @@ function draw(){
     }
     
     if(keyIsDown(71)){
-        gaussianBlur();
+        softLight();
     }
     
     if(keyIsDown(70)){
-        gaussianBlur2();
+        foggy();
     }
     
 }
@@ -102,7 +101,7 @@ function brighten(num){
 }
 
 //this function was based off Crystal Chen and Paolla Bruno Druto example code on https://idmnyu.github.io/p5.js-image/Blur/index.html
-function gaussianBlur(){
+function softLight(){
   
   let matrix = [[1, 4, 6, 4, 1],
 		        [4, 16, 24, 16, 4],
@@ -238,7 +237,7 @@ function gaussianBlur(){
 		updatePixels();
 }
 
-function gaussianBlur2(){
+function foggy(){
   
   let matrix = [[1, 8, 10, 12, 14, 12, 10, 8, 1],
 		        [8, 64, 80, 96, 112, 96, 80, 64, 8],
@@ -616,9 +615,9 @@ function gaussianBlur2(){
                    r71+r72+r73+r74+r75+r76+r77+r78+r79+r80+
                    r81)/5776;
 					
-        pixels[e5] = red;
-        pixels[e5+1] = green;
-        pixels[e5+2] = blue;
+        pixels[e5] = red+20;
+        pixels[e5+1] = green+20;
+        pixels[e5+2] = blue+20;
         pixels[e5+3] = pixels[i5+3];
 			
 	  	}	
