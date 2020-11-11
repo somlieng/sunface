@@ -29,7 +29,7 @@ function modelLoaded() {
   select('#status').html('I can see thy eyes anon');
 }
 
-//very frame, clear old picture and update with new temperature
+//every frame, clear old picture and update with new temperature using PoseNet eye tracking data
 function draw(){
     clear();
     image(video, 0, 0);
@@ -619,7 +619,7 @@ function foggy(){
         pixels[e5+1] = green+20;
         pixels[e5+2] = blue+20;
         pixels[e5+3] = pixels[i5+3];
-			
+        //added to calculated value to make it brighter
 	  	}	
   }
 		updatePixels();
